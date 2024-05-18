@@ -9,7 +9,8 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
 import connectDB from "./data-access/connection";
-// import { itemsRouter } from "./items/items.router";
+import userRouter from "./routes/user.route";
+import authRouter from "./routes/auth.route";
 
 dotenv.config();
 
@@ -30,7 +31,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use("/api/menu/items", itemsRouter);
+
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', authRouter);
 
 app.get("/", (req, res) => res.json({ success: true, data: 1989 }));
 

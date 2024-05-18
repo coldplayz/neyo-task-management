@@ -53,25 +53,38 @@ const userSchema = new Schema({
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  this.password = await bcrypt.hash(this.password, 10);
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(this.password, salt);
+  this.password = hash;
   next();
 });
 
 // Method to check if the entered password is correct
 userSchema.methods.isPasswordCorrect = async function (password: string) {
-  return await bcrypt.compare(password, this.password);
+  return await bcrypt.compareSync(password, this.password);
 };
+
+// Ensure sensitive idata is not returned
+userSchema.set("toJSON", {
+  // virtuals: true,
+  transform: function (doc, ret, options) {
+    delete ret.password;
+    delete ret.refreshToken;
+    return ret;
+  },
+});
 
 // Method to generate an access token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
-      _id: this._id,
+      id: this._id,
       email: this.email,
+      role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET || testSecret,
     {
-      expiresIn: "15m",
+      expiresIn: "5m",
     }
   );
 };
@@ -80,11 +93,11 @@ userSchema.methods.generateAccessToken = function () {
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
-      _id: this._id,
+      id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET || testSecret,
     {
-      expiresIn: "1d",
+      expiresIn: "10m",
     }
   );
 };
@@ -92,26 +105,4 @@ userSchema.methods.generateRefreshToken = function () {
 // Compile the schema into a model
 const User = model('User', userSchema);
 
-// User.find({}).then(e=>{
-//   console.log(e)
-// })// 
-
-
-// const userId = "65b8cf33194c34194eb49639";
-// const newPassword = "user1pwd";
-//arstonrealestatesr@gmail.com
-// // Hash the new password
-//  bcrypt.genSalt(10, (err, salt) => {
-//   bcrypt.hash(newPassword, salt, async (err, hash) => {
-//     if (err) throw err;
-
-//     // Update the user's password in the database
-//   let u = await  User.updateOne(
-//       { _id: userId },
-//       { $set: { password: hash } },
-    
-//     );
-// console.log(u)
-//   });
-// });
-module.exports = User;
+export default User;
