@@ -6,16 +6,19 @@
 
 import { Schema, model } from "mongoose";
 
-const taskSchema = new Schema({
+const TaskSchema = new Schema({
   description: {
     type: String,
     required: true,
   },
-  done: Boolean,
+  done: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true, // This adds createdAt and updatedAt fields
 });
 
-const Task = model('Task', taskSchema);
+const Task = model('Task', TaskSchema);
 
 export default Task;

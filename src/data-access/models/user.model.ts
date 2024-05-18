@@ -15,7 +15,7 @@ import jwt from "jsonwebtoken";
 // In production, generate with `openssl rand -hex 32`
 const testSecret = 'test+secret';
 
-const userSchema = new Schema({
+const UserSchema = new Schema({
   firstName: {
     type: String,
     required: [true, 'First name is required'],
@@ -50,7 +50,7 @@ const userSchema = new Schema({
 });
 
 // Middleware to hash the password before saving
-userSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const salt = bcrypt.genSaltSync(10);
@@ -60,12 +60,12 @@ userSchema.pre("save", async function (next) {
 });
 
 // Method to check if the entered password is correct
-userSchema.methods.isPasswordCorrect = async function (password: string) {
+UserSchema.methods.isPasswordCorrect = async function (password: string) {
   return await bcrypt.compareSync(password, this.password);
 };
 
 // Ensure sensitive idata is not returned
-userSchema.set("toJSON", {
+UserSchema.set("toJSON", {
   // virtuals: true,
   transform: function (doc, ret, options) {
     delete ret.password;
@@ -75,7 +75,7 @@ userSchema.set("toJSON", {
 });
 
 // Method to generate an access token
-userSchema.methods.generateAccessToken = function () {
+UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       id: this._id,
@@ -90,19 +90,19 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 // Method to generate a refresh token
-userSchema.methods.generateRefreshToken = function () {
+UserSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET || testSecret,
     {
-      expiresIn: "10m",
+      expiresIn: "15m",
     }
   );
 };
 
 // Compile the schema into a model
-const User = model('User', userSchema);
+const User = model('User', UserSchema);
 
 export default User;
