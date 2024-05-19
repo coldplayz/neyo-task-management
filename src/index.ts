@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./data-access/connection";
 import userRouter from "./routes/user.route";
 import authRouter from "./routes/auth.route";
+import taskRouter from "./routes/task.route";
 
 dotenv.config();
 
@@ -34,8 +35,10 @@ app.use(cookieParser());
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/tasks', taskRouter);
 
-app.get("/", (req, res) => res.json({ success: true, data: 1989 }));
+// Sanity check
+app.get("/", (_, res) => res.json({ success: true, data: 'LIVE' }));
 
 /**
  * Server Startup

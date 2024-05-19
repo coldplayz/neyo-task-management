@@ -5,11 +5,26 @@
 * - this is a demo/assessment, so not much by way of business rules.
 */
 
-import TaskEntity from "../../entities/task.entity";
+import UserEntity from "../../entities/user.entity";
 
-export default function getTask(taskService, queryObj) {
+export default async function getTasks(userService, queryObj, userId) {
   // Inject dependency into the higher-level entity
-  const taskEntity = new TaskEntity(taskService);
+  const userEntity = new UserEntity(userService);
 
-  return taskEntity.getTasks(queryObj);
+  const user = await userEntity.getUserById(userId)
+
+  if (!user) {
+    const error: Error & { statusCode?: number } = new Error('User not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  let tasks = user.tasks;
+
+  if (queryObj.done != undefined) {
+    // TODO: see about doing this on the server (aggregation?)
+    tasks = tasks.filter((task) => task.done === queryObj.done);
+  }
+
+  return tasks;
 }

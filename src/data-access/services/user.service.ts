@@ -10,11 +10,11 @@ import User from "../models/user.model";
 // import { Document } from "mongoose";
 
 export async function getUsers(queryObj) {
-  return User.find(queryObj);
+  return User.find(queryObj).populate('tasks');
 }
 
 export async function getUserById(id) {
-  return User.findById(id);
+  return User.findById(id).populate('tasks');
 }
 
 export async function createUser(userData) {
