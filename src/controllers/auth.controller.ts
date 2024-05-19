@@ -4,7 +4,8 @@
 */
 
 import jwt from "jsonwebtoken";
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 
 import * as authService from "../data-access/services/auth.service";
 import userUC from "../use-cases/user";
@@ -19,6 +20,16 @@ import eventEmitter from "../events/api-events";
 // - uniform response object format
 
 export async function loginUser(req: Request, res: Response, next: NextFunction) {
+  const errors = validationResult(req);
+  // console.log(errors);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: errors.array()[0]?.msg
+    });
+  }
+
   const { email, password } = req.body;
 
   try {

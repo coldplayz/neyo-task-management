@@ -5,12 +5,15 @@ import {
   logoutUser,
   refreshAccessToken,
 } from "../controllers/auth.controller";
-import { verifyJWT } from "../middlewares/middleware";
+import {
+  verifyJWT,
+  loginValidator,
+} from "../middlewares/middleware";
 
 const authRouter = Router();
 
 // Login route
-authRouter.post('/login', loginUser);
+authRouter.post('/login', loginValidator, loginUser);
 
 // Logout
 authRouter.post('/logout', verifyJWT, logoutUser);

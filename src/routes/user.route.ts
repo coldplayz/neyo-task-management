@@ -7,7 +7,10 @@ import {
   editUserById,
   deleteUserById,
 } from "../controllers/user.controller";
-import { verifyJWT } from "../middlewares/middleware";
+import {
+  verifyJWT,
+  signupValidator,
+} from "../middlewares/middleware";
 
 const userRouter = Router();
 
@@ -21,7 +24,7 @@ userRouter.get('/:id', getUserById);
 
 // Create new user
 // userRouter.post('/', (req, res) => res.json({ route: 'POST /users' }));
-userRouter.post('/', createUser);
+userRouter.post('/', signupValidator, createUser);
 
 // Update a user
 // userRouter.put('/:id', (req, res) => res.json({ route: 'PUT /users/:id' }));

@@ -6,7 +6,8 @@
 *   thus knowing about and depending on their import.
 */
 
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 
 import * as userService from "../data-access/services/user.service";
 import userUC from "../use-cases/user";
@@ -50,6 +51,16 @@ export async function getUserById(req: Request, res: Response, next: NextFunctio
 }
 
 export async function createUser(req: Request, res: Response, next: NextFunction) {
+  const errors = validationResult(req);
+  // console.log(errors);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: errors.array()[0]?.msg
+    });
+  }
+
   const bodyProps = ['password', 'firstName', 'lastName', 'email'];
   const userData = {};
 
