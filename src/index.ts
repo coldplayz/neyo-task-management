@@ -30,7 +30,8 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 3456;
 // const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:8080',
+    // origin: process.env.CLIENT_URL || 'http://localhost:8080',
+    cors: "*", // insecure; for development/testing only
   },
 });
 
@@ -64,11 +65,9 @@ app.get("/", (_, res) => {
 connectDB()
   .then(() => {
     server.listen(PORT, () => {
-      /*
       eventEmitter.on('apiEvent', (msg) => {
         io.emit('apiEvent', msg);
       });
-     */
 
       eventEmitter.on('createUser', (msg) => {
         io.emit('createUser', msg);
