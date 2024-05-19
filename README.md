@@ -47,7 +47,7 @@ That's the sanity check endpoint. It returns a simple object:
 
 ### Socket Event Stream
 
-The API also exposes a socket stream for notifying of events.
+The API also exposes a socket stream for notifying of events, using socket.io.
 
 These events are related to CRUD operations on the API, and include:
 
@@ -67,6 +67,9 @@ These events are related to CRUD operations on the API, and include:
 
 There's also a generic `apiEvent` event that is emitted after a request
 to the sanity check endpoint (`/`).
+
+Subscribe to any of these events onbthe clients to get
+updates, with some support for connection recovery.
 
 ## API Endpoints
 

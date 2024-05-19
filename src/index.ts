@@ -29,10 +29,10 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 3456;
 // const app = express();
 // const server = createServer(app);
 const io = new Server(server, {
+  connectionStateRecovery: {}, // in-memory state for clients
   cors: {
-    // origin: process.env.CLIENT_URL || 'http://localhost:8080',
-    cors: "*", // insecure; for development/testing only
-  },
+    origin: "*", // insecure; for development/testing only
+  }
 });
 
 // const ee = new EventEmitter();
