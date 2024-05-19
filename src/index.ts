@@ -64,8 +64,62 @@ app.get("/", (_, res) => {
 connectDB()
   .then(() => {
     server.listen(PORT, () => {
+      /*
       eventEmitter.on('apiEvent', (msg) => {
         io.emit('apiEvent', msg);
+      });
+     */
+
+      eventEmitter.on('createUser', (msg) => {
+        io.emit('createUser', msg);
+      });
+
+      eventEmitter.on('getUsers', (msg) => {
+        io.emit('getUsers', msg);
+      });
+
+      eventEmitter.on('getUserById', (msg) => {
+        io.emit('getUserById', msg);
+      });
+
+      eventEmitter.on('editUserById', (msg) => {
+        io.emit('editUserById', msg);
+      });
+
+      eventEmitter.on('deleteUserById', (msg) => {
+        io.emit('deleteUserById', msg);
+      });
+
+      eventEmitter.on('createTask', (msg) => {
+        io.emit('createTask', msg);
+      });
+
+      eventEmitter.on('getTasks', (msg) => {
+        io.emit('getTasks', msg);
+      });
+
+      eventEmitter.on('getTaskById', (msg) => {
+        io.emit('getTaskById', msg);
+      });
+
+      eventEmitter.on('editTaskById', (msg) => {
+        io.emit('editTaskById', msg);
+      });
+
+      eventEmitter.on('deleteTaskById', (msg) => {
+        io.emit('deleteTaskById', msg);
+      });
+
+      eventEmitter.on('loginUser', (msg) => {
+        io.emit('loginUser', msg);
+      });
+
+      eventEmitter.on('logoutUser', (msg) => {
+        io.emit('logoutUser', msg);
+      });
+
+      eventEmitter.on('refreshToken', (msg) => {
+        io.emit('refreshToken', msg);
       });
 
       console.log(`Listening on port ${PORT}`);

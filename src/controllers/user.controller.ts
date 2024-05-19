@@ -10,6 +10,7 @@ import {Request, Response, NextFunction} from "express";
 
 import * as userService from "../data-access/services/user.service";
 import userUC from "../use-cases/user";
+import eventEmitter from "../events/api-events";
 
 // TODO:
 // - see about decoupling controller from data service; perhaps
@@ -28,6 +29,8 @@ export async function getUsers(req: Request, res: Response, next: NextFunction) 
   try {
     const users = await userUC.getUsers(userService, queryObj);
     res.json({users});
+    eventEmitter.emit('apiEvent', { getUsers: true, users });
+    eventEmitter.emit('getUsers', { getUsers: true, users });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -39,6 +42,8 @@ export async function getUserById(req: Request, res: Response, next: NextFunctio
   try {
     const user = await userUC.getUserById(userService, id);
     res.json({user});
+    eventEmitter.emit('apiEvent', { getUserById: true, user });
+    eventEmitter.emit('getUserById', { getUserById: true, user });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -55,6 +60,8 @@ export async function createUser(req: Request, res: Response, next: NextFunction
   try {
     const newUser = await userUC.createUser(userService, userData);
     res.json({newUser});
+    eventEmitter.emit('apiEvent', { createUser: true, newUser });
+    eventEmitter.emit('createUser', { createUser: true, newUser });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -72,6 +79,8 @@ export async function editUserById(req: Request, res: Response, next: NextFuncti
   try {
     const editedUser = await userUC.editUserById(userService, id, updateData);
     res.json({editedUser});
+    eventEmitter.emit('apiEvent', { editUserById: true, editedUser });
+    eventEmitter.emit('editUserById', { editUserById: true, editedUser });
   } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -83,6 +92,8 @@ export async function deleteUserById(req: Request, res: Response, next: NextFunc
   try {
     const result = await userUC.deleteUserById(userService, id);
     res.json({ success: true, result });
+    eventEmitter.emit('apiEvent', { data: {} });
+    eventEmitter.emit('deleteUserById', { data: {} });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }

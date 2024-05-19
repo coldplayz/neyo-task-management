@@ -12,6 +12,7 @@ import * as userService from "../data-access/services/user.service";
 import * as taskService from "../data-access/services/task.service";
 import userUC from "../use-cases/user";
 import taskUC from "../use-cases/task";
+import eventEmitter from "../events/api-events";
 
 // TODO:
 // - see about decoupling controller from data service; perhaps
@@ -43,6 +44,8 @@ export async function getTasks(req: Request, res: Response, next: NextFunction) 
       req.user.id
     );
     res.json({ tasks });
+    eventEmitter.emit('apiEvent', { getTasks: true, tasks });
+    eventEmitter.emit('getTasks', { getTasks: true, tasks });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -54,6 +57,8 @@ export async function getTaskById(req: Request, res: Response, next: NextFunctio
   try {
     const task = await taskUC.getTaskById(taskService, id);
     res.json({task});
+    eventEmitter.emit('apiEvent', { getTaskById: true, task });
+    eventEmitter.emit('getTaskById', { getTaskById: true, task });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -75,6 +80,8 @@ export async function createTask(req: Request, res: Response, next: NextFunction
       req.user.id
     );
     res.json({newTask});
+    eventEmitter.emit('apiEvent', { createTask: true, newTask });
+    eventEmitter.emit('createTask', { createTask: true, newTask });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -92,6 +99,8 @@ export async function editTaskById(req: Request, res: Response, next: NextFuncti
   try {
     const editedTask = await taskUC.editTaskById(taskService, id, updateData);
     res.json({editedTask});
+    eventEmitter.emit('apiEvent', { editTaskById: true, editedTask });
+    eventEmitter.emit('editTaskById', { editTaskById: true, editedTask });
   } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
@@ -108,6 +117,8 @@ export async function deleteTaskById(req: Request, res: Response, next: NextFunc
       req.user.id
     );
     res.json({ success: true, result });
+    eventEmitter.emit('apiEvent', { data: {} });
+    eventEmitter.emit('deleteTaskById', { data: {} });
   } catch (err) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
