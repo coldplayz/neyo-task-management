@@ -7,7 +7,12 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+// import { createServer } from "node:http;
+// import { EventEmitter } from "node:events";
+import { Server } from "socket.io";
 
+import { server, app } from "../src/app-server";
+import eventEmitter from "../src/events/api-events";
 import connectDB from "./data-access/connection";
 import userRouter from "./routes/user.route";
 import authRouter from "./routes/auth.route";
@@ -16,15 +21,23 @@ import taskRouter from "./routes/task.route";
 dotenv.config();
 
 /**
- * App
+ * Server and socket setup
  */
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 3456;
 
-const app = express();
+// const app = express();
+// const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || 'http://localhost:8080',
+  },
+});
+
+// const ee = new EventEmitter();
 
 /**
- *  Configuration
+ *  Configuration and middlewares
  */
 
 app.use(helmet());
@@ -38,14 +51,23 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/tasks', taskRouter);
 
 // Sanity check
-app.get("/", (_, res) => res.json({ success: true, data: 'LIVE' }));
+app.get("/", (_, res) => {
+  res.json({ success: true, data: 'LIVE' })
+  eventEmitter.emit('apiEvent', 'sanity check successfull!');
+});
+
+// Socket
 
 /**
- * Server Startup
+ * Server and socket startup
  */
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
+      eventEmitter.on('apiEvent', (msg) => {
+        io.emit('apiEvent', msg);
+      });
+
       console.log(`Listening on port ${PORT}`);
     });
   })
