@@ -8,28 +8,38 @@
 *   these will be injected to achieve dependency inversion.
 */
 
+import {
+  IBaseUserDTO,
+  IUserCreateDTO,
+  IUserQueryDTO,
+  IUserUpdateDTO,
+  IServicePlugin,
+} from "./interfaces";
+
 class UserEntity {
-  constructor(servicePlugin) {
+  service: IServicePlugin;
+
+  constructor(servicePlugin: IServicePlugin) {
     this.service = servicePlugin;
   }
 
-  createUser(userData) {
+  createUser(userData: IUserCreateDTO) {
     return this.service.createUser(userData);
   };
 
-  getUsers(queryObj) {
+  getUsers(queryObj: IUserQueryDTO) {
     return this.service.getUsers(queryObj);
   }
 
-  getUserById(id) {
+  getUserById(id: string) {
     return this.service.getUserById(id);
   }
 
-  editUserById(id, updateObj) {
+  editUserById(id: string, updateObj: IUserUpdateDTO) {
     return this.service.editUserById(id, updateObj);
   }
 
-  deleteUserById(id) {
+  deleteUserById(id: string) {
     return this.service.deleteUserById(id);
   }
 }
