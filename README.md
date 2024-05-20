@@ -1,6 +1,6 @@
 # Task Management API
 
-A simple task-management demo.
+A simple task-management demo. Implemented with Clean Architecture in mind.
 
 ## Setup
 
