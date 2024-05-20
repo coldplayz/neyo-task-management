@@ -8,28 +8,38 @@
 *   these will be injected to achieve dependency inversion.
 */
 
+import {
+  IBaseTaskDTO,
+  ITaskCreateDTO,
+  ITaskQueryDTO,
+  ITaskUpdateDTO,
+  ITaskServicePlugin,
+} from "./interfaces";
+
 class TaskEntity {
-  constructor(servicePlugin) {
+  service: ITaskServicePlugin;
+
+  constructor(servicePlugin: ITaskServicePlugin) {
     this.service = servicePlugin;
   }
 
-  createTask(taskData) {
+  createTask(taskData: ITaskCreateDTO) {
     return this.service.createTask(taskData);
   };
 
-  getTasks(queryObj) {
+  getTasks(queryObj: ITaskQueryDTO) {
     return this.service.getTasks(queryObj);
   }
 
-  getTaskById(id) {
+  getTaskById(id: string) {
     return this.service.getTaskById(id);
   }
 
-  editTaskById(id, updateObj) {
+  editTaskById(id: string, updateObj: ITaskUpdateDTO) {
     return this.service.editTaskById(id, updateObj);
   }
 
-  deleteTaskById(id) {
+  deleteTaskById(id: string) {
     return this.service.deleteTaskById(id);
   }
 }

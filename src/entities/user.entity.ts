@@ -13,13 +13,13 @@ import {
   IUserCreateDTO,
   IUserQueryDTO,
   IUserUpdateDTO,
-  IServicePlugin,
+  IUserServicePlugin,
 } from "./interfaces";
 
 class UserEntity {
-  service: IServicePlugin;
+  service: IUserServicePlugin;
 
-  constructor(servicePlugin: IServicePlugin) {
+  constructor(servicePlugin: IUserServicePlugin) {
     this.service = servicePlugin;
   }
 
