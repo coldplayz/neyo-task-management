@@ -23,6 +23,8 @@
 
 // TODO:
 // - see about integrating validation and auth with business rules
+// - (fix): ensure that when a task is deleted,
+//   its ref is also removed from the corresponding user.
 
 import TaskEntity from "../../entities/task.entity";
 import UserEntity from "../../entities/user.entity";
@@ -53,9 +55,11 @@ export default async function deleteTaskById(
     throw error;
   }
 
-  const res =  taskEntity.deleteTaskById(taskId);
+  const res =  await taskEntity.deleteTaskById(taskId);
 
-  taskUser.tasks = taskUser.tasks.filter((taskID) => taskID !== taskId);
+  taskUser.tasks = taskUser.tasks.filter(
+    (taskID) => taskID.toString() !== taskId.toString()
+  );
   await taskUser.save();
 
   return res;

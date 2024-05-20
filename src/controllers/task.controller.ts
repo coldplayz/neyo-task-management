@@ -92,12 +92,23 @@ export async function createTask(req: Request, res: Response, next: NextFunction
 
 export async function editTaskById(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
-  const updateData: { [key: string]: string } = {};
+  const updateData: { [key: string]: string | boolean } = {};
 
   const bodyProps = ['description', 'done'];
   bodyProps.forEach((prop) => {
-    if (req.body[prop]) updateData[prop] = req.body[prop];
+    if (req.body[prop] != undefined) updateData[prop] = req.body[prop];
   });
+
+  switch (updateData.done) {
+    case 'false':
+      updateData.done = false;
+      break;
+    case 'true':
+      updateData.done = true;
+      break;
+  }
+
+  // console.log(updateData, req.body); // SCAFF
 
   try {
     const editedTask = await taskUC.editTaskById(taskService, id, updateData);

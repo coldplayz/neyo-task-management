@@ -33,6 +33,8 @@ export async function editTaskById(id, updateObj) {
     throw error;
   }
 
+  // console.log(id, updateObj); // SCAFF
+
   Object.entries(updateObj).forEach(([k, v]) => {
     existingTask[k] = v;
   });
