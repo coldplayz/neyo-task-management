@@ -52,9 +52,8 @@ export async function loginUser(req: Request, res: Response, next: NextFunction)
         refreshToken,
         message: "Logged in successfully",
       });
-    eventEmitter.emit('apiEvent', { login: true, user: email });
     eventEmitter.emit('loginUser', { login: true, user: email });
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
 }
@@ -63,7 +62,8 @@ export async function logoutUser(req: Request, res: Response, next: NextFunction
   try {
     // Remove the refresh token from the user's information
     // console.log(req.user); // SCAFF
-    const result = await authService.logoutUser(req.user.id);
+    const id: string = req.user.id;
+    const result = await authService.logoutUser(id);
     // console.log('result###->', result); // SCAFF
 
     // Set options for cookies
@@ -78,9 +78,8 @@ export async function logoutUser(req: Request, res: Response, next: NextFunction
       .clearCookie("accessToken", options)
       .clearCookie("refreshToken", options)
       .json({ user: {}, message: "Logged out successfully" });
-    eventEmitter.emit('apiEvent', { data: 'Logout successfull!' });
     eventEmitter.emit('logoutUser', { data: 'Logout successfull!' });
-  } catch (err) {
+  } catch (err: any) {
     if (err.name === 'JsonWebTokenError') {
       return res.status(401).json(
         { success: false, error: 'User not logged in' }
@@ -127,19 +126,13 @@ export async function refreshAccessToken(
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
       .json({ accessToken, refreshToken, message: "Access token refreshed" });
-    eventEmitter.emit('apiEvent', {
-      tokens: {
-        accessToken,
-        refreshToken,
-      },
-    });
     eventEmitter.emit('refreshToken', {
       tokens: {
         accessToken,
         refreshToken,
       },
     });
-  } catch (err) {
+  } catch (err: any) {
     if (err.name === 'JsonWebTokenError') {
       return res.status(401).json(
         {
