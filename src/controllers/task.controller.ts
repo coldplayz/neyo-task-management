@@ -13,16 +13,22 @@ import * as taskService from "../data-access/services/task.service";
 import userUC from "../use-cases/user";
 import taskUC from "../use-cases/task";
 import eventEmitter from "../events/api-events";
+import {
+  ITaskCreateDTO,
+  ITaskQueryDTO,
+  ITaskUpdateDTO,
+} from "../entities/interfaces";
 
 // TODO:
 // - see about decoupling controller from data service; perhaps
 //   moving dependency injection to the main entry point - index.ts
 // - data validation
 // - data formatting
+// - custom error handler
 
 export async function getTasks(req: Request, res: Response, next: NextFunction) {
   const queryProps = ['done'];
-  const queryObj = {};
+  const queryObj: ITaskQueryDTO = {};
 
   queryProps.forEach((prop) => {
     if (req.query[prop]) queryObj[prop] = req.query[prop];
@@ -46,7 +52,7 @@ export async function getTasks(req: Request, res: Response, next: NextFunction) 
     res.json({ tasks });
     eventEmitter.emit('apiEvent', { getTasks: true, tasks });
     eventEmitter.emit('getTasks', { getTasks: true, tasks });
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
 }
@@ -56,17 +62,17 @@ export async function getTaskById(req: Request, res: Response, next: NextFunctio
 
   try {
     const task = await taskUC.getTaskById(taskService, id);
-    res.json({task});
+    res.json({ task });
     eventEmitter.emit('apiEvent', { getTaskById: true, task });
     eventEmitter.emit('getTaskById', { getTaskById: true, task });
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
 }
 
 export async function createTask(req: Request, res: Response, next: NextFunction) {
   const bodyProps = ['description'];
-  const taskData = {};
+  const taskData: ITaskCreateDTO = {};
 
   bodyProps.forEach((prop) => {
     if (req.body[prop]) taskData[prop] = req.body[prop];
@@ -79,10 +85,10 @@ export async function createTask(req: Request, res: Response, next: NextFunction
       taskData,
       req.user.id
     );
-    res.json({newTask});
+    res.status(201).json({ newTask });
     eventEmitter.emit('apiEvent', { createTask: true, newTask });
     eventEmitter.emit('createTask', { createTask: true, newTask });
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
 }
@@ -116,10 +122,10 @@ export async function deleteTaskById(req: Request, res: Response, next: NextFunc
       id,
       req.user.id
     );
-    res.json({ success: true, result });
+    res.status(204).json({ success: true, result });
     eventEmitter.emit('apiEvent', { data: {} });
     eventEmitter.emit('deleteTaskById', { data: {} });
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.statusCode || 500).json({ success: false, error: err });
   }
 }

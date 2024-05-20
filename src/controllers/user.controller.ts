@@ -13,16 +13,9 @@ import * as userService from "../data-access/services/user.service";
 import userUC from "../use-cases/user";
 import eventEmitter from "../events/api-events";
 import {
-  IBaseUserDTO,
   IUserCreateDTO,
   IUserQueryDTO,
   IUserUpdateDTO,
-  IUserServicePlugin,
-  IBaseTaskDTO,
-  ITaskCreateDTO,
-  ITaskQueryDTO,
-  ITaskUpdateDTO,
-  ITaskServicePlugin,
 } from "../entities/interfaces";
 
 // TODO:
